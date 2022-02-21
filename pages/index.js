@@ -70,6 +70,12 @@ const Snake = () => {
     { x: 6, y: 12 },
   ];
   const grid = useRef();
+  const reset = () => {
+    setSnake(getDefaultSnake());
+    setDirection(Direction.Right);
+    setFood({ x: 4, y: 10 });
+    setScore(0);
+  };
 
   // snake[0] is head and snake[snake.length - 1] is tail
   const [snake, setSnake] = useState(getDefaultSnake());
@@ -79,6 +85,7 @@ const Snake = () => {
   const [score, setScore] = useState(0);
 
   // move the snake
+
   useEffect(() => {
     const runSingleStep = () => {
       setSnake((snake) => {
@@ -90,6 +97,12 @@ const Snake = () => {
         const newSnake = [newHead, ...snake];
 
         // remove tail
+        if (isSnake(newHead)) {
+          alert("Game Over");
+          // clearInterval(grid.current);
+          reset();
+        }
+
         if (!isFood(newHead)) newSnake.pop();
 
         return newSnake;
@@ -97,9 +110,9 @@ const Snake = () => {
     };
 
     runSingleStep();
-    const timer = setInterval(runSingleStep, 500);
+    grid.current = setInterval(runSingleStep, 500);
 
-    return () => clearInterval(timer);
+    return () => clearInterval(grid.current);
   }, [direction, food]);
 
   // update score whenever head touches a food
@@ -117,7 +130,18 @@ const Snake = () => {
 
       setFood(newFood);
     }
-  }, [snake]);
+    // const setNewFood = () => {
+    //   const newFood = getRandomCell();
+    //   while (isSnake(newFood)) {
+    //     newFood = getRandomCell();
+    //   }
+    //   setFood(newFood);
+    // };
+    // setNewFood();
+    // const timer2 = setInterval(setNewFood, 10000);
+
+    // return () => clearInterval(timer2);
+  }, [snake, food]);
 
   useEffect(() => {
     const handleNavigation = (event) => {
