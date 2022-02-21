@@ -64,11 +64,15 @@ const getRandomCell = () => ({
 });
 
 const Snake = () => {
-  const getDefaultSnake = () => [
-    { x: 8, y: 12 },
-    { x: 7, y: 12 },
-    { x: 6, y: 12 },
-  ];
+  console.log("rendering");
+  const getDefaultSnake = () => {
+    console.log("getDefaultSnake");
+    return [
+      { x: 8, y: 12 },
+      { x: 7, y: 12 },
+      { x: 6, y: 12 },
+    ];
+  };
   const grid = useRef();
   const reset = () => {
     setSnake(getDefaultSnake());
@@ -78,7 +82,8 @@ const Snake = () => {
   };
 
   // snake[0] is head and snake[snake.length - 1] is tail
-  const [snake, setSnake] = useState(getDefaultSnake());
+  const [snake, setSnake] = useState(() => getDefaultSnake());
+  console.log(snake);
   const [direction, setDirection] = useState(Direction.Right);
 
   const [food, setFood] = useState({ x: 4, y: 10 });
@@ -87,6 +92,7 @@ const Snake = () => {
   // move the snake
 
   useEffect(() => {
+    console.log("use effect 1", snake);
     const runSingleStep = () => {
       setSnake((snake) => {
         const head = snake[0];
@@ -97,10 +103,9 @@ const Snake = () => {
         const newSnake = [newHead, ...snake];
 
         // remove tail
-        if (
-          isSnake(newHead) &&
-          (newSnake[0].x > Config.width || newSnake[0].x < 0)
-        ) {
+        // &&
+        // (newSnake[0].x > Config.width || newSnake[0].x < 0)
+        if (isSnake(newHead)) {
           alert(`Game Over! Your score is ${score}`);
           // clearInterval(grid.current);
           reset();
@@ -138,6 +143,7 @@ const Snake = () => {
 
   // update score whenever head touches a food
   useEffect(() => {
+    console.log("use effect 2", snake);
     const head = snake[0];
     if (isFood(head)) {
       setScore((score) => {
@@ -164,30 +170,46 @@ const Snake = () => {
     // return () => clearInterval(timer2);
   }, [snake, food]);
 
+  // const head = snake[0];
+  // const newHead = { x: head.x + direction.x, y: head.y + direction.y };
+
   useEffect(() => {
+    console.log("use effect 3", snake);
     const handleNavigation = (event) => {
+      console.log("use effect 3-handle navigation", snake);
       switch (event.key) {
         case "ArrowUp":
-          setDirection(Direction.Top);
+          if (snake[0].y !== snake[1].y + 1) {
+            setDirection(Direction.Top);
+          }
+
           break;
 
         case "ArrowDown":
-          setDirection(Direction.Bottom);
+          if (snake[0].y + 1 !== snake[1].y) {
+            setDirection(Direction.Bottom);
+          }
+
           break;
 
         case "ArrowLeft":
-          setDirection(Direction.Left);
+          if (snake[0].x !== snake[1].x + 1) {
+            setDirection(Direction.Left);
+          }
+
           break;
 
         case "ArrowRight":
-          setDirection(Direction.Right);
+          if (snake[0].x + 1 !== snake[1].x) {
+            setDirection(Direction.Right);
+          }
           break;
       }
     };
     window.addEventListener("keydown", handleNavigation);
 
     return () => window.removeEventListener("keydown", handleNavigation);
-  }, []);
+  }, [snake]);
 
   // ?. is called optional chaining
   // see: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Optional_chaining
