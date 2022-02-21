@@ -97,13 +97,34 @@ const Snake = () => {
         const newSnake = [newHead, ...snake];
 
         // remove tail
-        if (isSnake(newHead)) {
-          alert("Game Over");
+        if (
+          isSnake(newHead) &&
+          (newSnake[0].x > Config.width || newSnake[0].x < 0)
+        ) {
+          alert(`Game Over! Your score is ${score}`);
           // clearInterval(grid.current);
           reset();
         }
 
         if (!isFood(newHead)) newSnake.pop();
+        const tail = newSnake[newSnake.length - 1];
+        if (newHead.x >= Config.width) {
+          newHead.x = 0;
+        } else if (newHead.x < 0) {
+          newHead.x = Config.width;
+        }
+
+        if (newHead.y > Config.height) {
+          newHead.y = 0;
+        } else if (newHead.y < 0) {
+          newHead.y = Config.height;
+        }
+        // else if (tail.x === 0) {
+        //   newSnake[0].x = Config.width;
+        // }
+        // if (tail.y === Config.height) {
+        //   newSnake[0].y = 0;
+        // }
 
         return newSnake;
       });
