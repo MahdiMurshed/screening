@@ -73,6 +73,10 @@ const Snake = () => {
       { x: 6, y: 12 },
     ];
   };
+  const getFood = () => {
+    console.log("getFood");
+    return [{ x: 4, y: 10 }];
+  };
   const grid = useRef();
   const reset = () => {
     setSnake(getDefaultSnake());
@@ -86,7 +90,7 @@ const Snake = () => {
   console.log(snake);
   const [direction, setDirection] = useState(Direction.Right);
 
-  const [food, setFood] = useState({ x: 4, y: 10 });
+  const [food, setFood] = useState(() => getFood());
   const [score, setScore] = useState(0);
 
   // move the snake
@@ -112,7 +116,7 @@ const Snake = () => {
         }
 
         if (!isFood(newHead)) newSnake.pop();
-        const tail = newSnake[newSnake.length - 1];
+
         if (newHead.x >= Config.width) {
           newHead.x = 0;
         } else if (newHead.x < 0) {
@@ -145,7 +149,8 @@ const Snake = () => {
   useEffect(() => {
     console.log("use effect 2", snake);
     const head = snake[0];
-    if (isFood(head)) {
+    const found = isFood(head);
+    if (found) {
       setScore((score) => {
         return score + 1;
       });
@@ -154,8 +159,10 @@ const Snake = () => {
       while (isSnake(newFood)) {
         newFood = getRandomCell();
       }
+      const id = food.indexOf(found);
+      const newFoods = food.splice(id, 1);
 
-      setFood(newFood);
+      setFood([...newFoods, newFood]);
     }
     // const setNewFood = () => {
     //   const newFood = getRandomCell();
@@ -213,7 +220,9 @@ const Snake = () => {
 
   // ?. is called optional chaining
   // see: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Optional_chaining
-  const isFood = ({ x, y }) => food.x === x && food.y === y;
+  // const isFood = ({ x, y }) => food.x === x && food.y === y;
+  const isFood = ({ x, y }) =>
+    snake.find((position) => position.x === x && position.y === y);
 
   const isSnake = ({ x, y }) =>
     snake.find((position) => position.x === x && position.y === y);

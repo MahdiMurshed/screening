@@ -4,7 +4,6 @@ const KatherineCohen = CruzHarrell.subordinates[0];
 
 const RoxanneSimmons = CruzHarrell.subordinates[3];
 
-
 // // return names of all subordinates of person
 // const example1 = (person) => {
 //   return person.subordinates.map((subordinate) => subordinate.name);
@@ -84,13 +83,13 @@ const RoxanneSimmons = CruzHarrell.subordinates[3];
 
 // // given a person, return the names of subordinates who themselves have subordinates
 // const exercise22 = (person) => {
-  
+
 //   const ans=[];
 //   person.subordinates.filter(sub=>{
 //     if(sub.subordinates.length!==0){
 //       ans.push(sub.name)
 //     }
-    
+
 //   })
 //     return ans;
 // };
@@ -139,9 +138,11 @@ const RoxanneSimmons = CruzHarrell.subordinates[3];
 // // given a person, return difference between female and male subordinates
 // // e.g: if someone has 4 female subordinates and 7 male subordinates, return -3(=4-7)
 const exercise32 = (person) => {
-  const maleNum=person.subordinates.filter(sub=>sub.gender==="male").length;
-  const femaleNum=person.subordinates.length-maleNum
-  return femaleNum-maleNum
+  const maleNum = person.subordinates.filter(
+    (sub) => sub.gender === "male"
+  ).length;
+  const femaleNum = person.subordinates.length - maleNum;
+  return femaleNum - maleNum;
 };
 
 test("Exercise 3.2: given a person, return difference between female and male subordinates", () => {
@@ -151,9 +152,9 @@ test("Exercise 3.2: given a person, return difference between female and male su
 
 // // do the same exercise32, but with using only 1 reduce function and nothing else
 const exercise32a = (person) => {
-  return person.subordinates.reduce((dif,sub)=>{
-    return sub.gender==="female"?++dif:--dif;
-  },0)
+  return person.subordinates.reduce((dif, sub) => {
+    return sub.gender === "female" ? ++dif : --dif;
+  }, 0);
 };
 
 test("Exercise 3.2a: given a person, return difference between female and male subordinates", () => {
@@ -169,10 +170,10 @@ test("Exercise 3.2a: given a person, return difference between female and male s
 
 // implement map function
 const map = (array, func) => {
-  const ans=[];
- 
-  for(let i=0;i<array.length;i++){
-    ans.push(func(array[i]))
+  const ans = [];
+
+  for (let i = 0; i < array.length; i++) {
+    ans.push(func(array[i]));
   }
   return ans;
 };
@@ -187,12 +188,11 @@ test("Exercise 4.1: implement map function", () => {
 
 // // implement filter function
 const filter = (array, func) => {
-  const ans=[];
- 
-  for(let i=0;i<array.length;i++){
-   
-    if(func(array[i])){
-    ans.push(array[i])
+  const ans = [];
+
+  for (let i = 0; i < array.length; i++) {
+    if (func(array[i])) {
+      ans.push(array[i]);
     }
   }
   return ans;
@@ -215,13 +215,10 @@ test("Exercise 4.2: implement filter function", () => {
 
 // implement reduce
 const reduce = (array, func, initalValue) => {
-  
-    for(let i=0;i<array.length;i++){
-      
-      initalValue = func(initalValue,array[i])
+  for (let i = 0; i < array.length; i++) {
+    initalValue = func(initalValue, array[i]);
   }
   return initalValue;
-
 };
 
 test("Exercise 4.3: implement reduce function", () => {
@@ -258,16 +255,18 @@ test("Example 5: return total number of people in the dataset", () => {
 
 // given a color, return number of people who have that eye color
 const exercise51 = (color) => {
-  const getTotalPeople = (person) =>
-    
-    person.subordinates
-      .filter((subordinate) => getTotalPeople(subordinate))
-      // add them together
-      .reduce((total, employees) => total + employees, 0);
+  const getTotalPeople = (person) => {
+    return person.eyeColor === color
+      ? 1
+      : 0 +
+          person.subordinates
+            .filter((subordinate) => getTotalPeople(subordinate))
+            // add them together
+            .reduce((total, employees) => total + employees, 0);
+  };
 
   // return number of people under the top-most person
   return getTotalPeople(CruzHarrell);
-
 };
 
 test("Exercise 5.1: given a color, return number of people who have that eye color", () => {
